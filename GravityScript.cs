@@ -8,14 +8,13 @@ public class GravityScript : MonoBehaviour
     //the gravitatinal constant, put at 1 for debug reasons
     static float G = 1f;//0.0000000000667408f this is the irl constant
 
-    public static Vector3 applyAllGravity(GameObject object1, List<BodyProperties> objectList)
+    public static Vector3 applyAllGravity(GameObject object1, List<BodyData> objectList)
     {
-
 
         //set up the force vector
         Vector3 F21 = new Vector3(0, 0, 0);
 
-        foreach (BodyProperties obj2 in objectList)
+        foreach (BodyData obj2 in objectList)
         {
             //make sure there is no repeat
             if (obj2.gameObject != object1)
@@ -34,8 +33,8 @@ public class GravityScript : MonoBehaviour
         Vector3 r1 = pulling.transform.position;
         Vector3 r2 = pulled.transform.position;
 
-        float m1 = pulling.GetComponent<BodyProperties>().mass;
-        float m2 = pulled.GetComponent<BodyProperties>().mass;
+        float m1 = pulling.GetComponent<BodyData>().mass;
+        float m2 = pulled.GetComponent<BodyData>().mass;
 
         Vector3 F21;
 

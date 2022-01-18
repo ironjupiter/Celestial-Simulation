@@ -11,13 +11,13 @@ public class CollisionScript : MonoBehaviour
     {
         float mass_ratio;
         Vector3 Force = new Vector3(0,0,0);
-        BodyProperties A1 = ps.body_data;
+        BodyData A1 = ps.body_data;
 
         //go through touching bodies script to find anything that needs to be changed
         foreach (GameObject cv in ps.touching_bodies)
         {
             //find the collided w/ object
-            BodyDataStorage A2 = ps.frozen_body_data[ps.frozen_body_data.IndexOf(new BodyDataStorage() { id = cv.GetComponent<BodyProperties>().id })];
+            BodyData A2 = cv.GetComponent<BodyData>();
 
             //M > m ||| find mass relationship to determine how much of p is turned into F, and related to that how much F is given to A1
             if (A1.mass > A2.mass)
@@ -37,16 +37,17 @@ public class CollisionScript : MonoBehaviour
             else if (A1.mass == A2.mass) 
             {
                 //both are equal so nothing matters in this case
-                Force = ((calculateAppliableForce(A1, A2)));
+                Force = ((calculateAppliableForce(A1, A2))); // do * <float> for inelastic collision
                 Force = Force - (((calculateThirdApplication(A1, A2))));
             }
         }
+
 
         return Force;
 
     }
 
-    static Vector3 calculateThirdApplication(BodyProperties object1, BodyDataStorage object2)
+    static Vector3 calculateThirdApplication(BodyData object1, BodyData object2)
     {
         float h1;
         float h2;
@@ -54,13 +55,13 @@ public class CollisionScript : MonoBehaviour
 
         //////////////////////////////////////////////
             
-        h1 = addToThirdVector(object1.momentuem.x,  object1.transform.position.x, object2.position.x);
+        h1 = addToThirdVector(object1.momentuem.x,  object1.transform.position.x, object2.transform.position.x);
         //////////////////////////////////////////////
 
-        h2 = addToThirdVector(object1.momentuem.y,  object1.transform.position.y, object2.position.y);
+        h2 = addToThirdVector(object1.momentuem.y,  object1.transform.position.y, object2.transform.position.y);
         //////////////////////////////////////////////
 
-        h3 = addToThirdVector(object1.momentuem.z,  object1.transform.position.z, object2.position.z);
+        h3 = addToThirdVector(object1.momentuem.z,  object1.transform.position.z, object2.transform.position.z);
 
         return new Vector3(h1, h2, h3);
     }
@@ -71,13 +72,12 @@ public class CollisionScript : MonoBehaviour
         float v = 0;
         if ((p1 > 0 && r1 < r2) || (p1 < 0 && r1 > r2))
         {
-            //Debug.Log("third");
             v = p1;
         }
         return v;
     }
 
-    static Vector3 calculateAppliableForce(BodyProperties object1, BodyDataStorage object2)
+    static Vector3 calculateAppliableForce(BodyData object1, BodyData object2)
     {
         float h1;
         float h2;
@@ -85,13 +85,13 @@ public class CollisionScript : MonoBehaviour
 
         //////////////////////////////////////////////
 
-        h1 = addToVector(object1.velocity.x, object2.velocity.x, object1.transform.position.x, object2.position.x, object2.momentuem.x);
+        h1 = addToVector(object1.velocity.x, object2.velocity.x, object1.transform.position.x, object2.transform.position.x, object2.momentuem.x);
         //////////////////////////////////////////////
             
-        h2 = addToVector(object1.velocity.y, object2.velocity.y, object1.transform.position.y, object2.position.y, object2.momentuem.y);
+        h2 = addToVector(object1.velocity.y, object2.velocity.y, object1.transform.position.y, object2.transform.position.y, object2.momentuem.y);
         //////////////////////////////////////////////
 
-        h3 = addToVector(object1.velocity.z, object2.velocity.z, object1.transform.position.z, object2.position.z, object2.momentuem.z);
+        h3 = addToVector(object1.velocity.z, object2.velocity.z, object1.transform.position.z, object2.transform.position.z, object2.momentuem.z);
 
         return new Vector3(h1, h2, h3);
     }
@@ -104,12 +104,10 @@ public class CollisionScript : MonoBehaviour
         if (Math.Abs(v2) > Math.Abs(v1))
         {
             v = p2;
-            //Debug.Log("1");
         }
         else if ((v1 > 0 && v2 < 0 && r1 < r2) || (v1 < 0 && v2 > 0 && r1 > r2))
         {
             v = p2;
-            //Debug.Log("2");
         }
 
         return v;

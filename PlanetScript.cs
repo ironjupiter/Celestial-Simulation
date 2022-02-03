@@ -6,11 +6,13 @@ using System;
 public class PlanetScript : MonoBehaviour
 {
     //important scripts
+    public GameObject prefab_copy;
     public BodyData body_data;
     Transform obj_transform;
 
     //gravitiy stuff
-    public bool gravity_affected = true;
+    private bool gravity_affected = true;
+    public bool to_destroy = false;
     public static List<BodyData> gravitational_bodies = new List<BodyData>();
 
 
@@ -18,8 +20,10 @@ public class PlanetScript : MonoBehaviour
     public List<GameObject> touching_bodies = new List<GameObject>();
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        Debug.Log("NEW OBJECT CREATED");
+
         //set bodydata script
         body_data = this.gameObject.GetComponent<BodyData>();
 
@@ -27,30 +31,33 @@ public class PlanetScript : MonoBehaviour
         obj_transform = this.gameObject.transform;
 
         //planet redering (not fully devloped)
-        obj_transform.localScale = findRadius(body_data.mass, body_data.denstity);
+        findRadius(body_data.radius);
         this.gameObject.GetComponent<Rigidbody>().mass = body_data.mass;
 
         //gravity stuff
         if(gravity_affected == true)
             gravitational_bodies.Add(body_data);
 
-        PhysicsSynchronizer.addCelestialBody(this.gameObject) ;
+        PhysicsSynchronizer.addCelestialBody(this.gameObject);
+    }
+
+    private void FixedUpdate()
+    {
+        //List<int> index_to_remove = new List<int>();
+        for (int i = 0; i < touching_bodies.Count; i++) 
+        {
+            if (touching_bodies[i] == null) 
+            {
+                touching_bodies.Remove(touching_bodies[i]);
+                i--;
+            }
+        }
     }
 
     //find radius of a sphere given the mass and density
-    public Vector3 findRadius(float m, float D)
+    public void findRadius(float radius)
     {
-        //find volume
-        double volume = m / D;
-
-        //cube volume
-        double volume3 = volume * volume * volume;
-
-        //absolute shit show to calculate radius
-        float radius = ((float)((Mathf.PI * 100) * volume3) / 100);
-
-        //return
-        return new Vector3(radius, radius, radius);
+        obj_transform.localScale = new Vector3(radius, radius, radius);
     }
 
     //when coliding add object to the two lists
@@ -68,5 +75,26 @@ public class PlanetScript : MonoBehaviour
     private void OnCollisionExit(Collision c_obj)
     {
         touching_bodies.Remove(c_obj.gameObject);
+    }
+
+    public static void editPlanet(GameObject edited_body, float total_system_mass, Vector3 momentuem, Vector3 position) 
+    {
+        edited_body.transform.position = position;
+        BodyData data = edited_body.GetComponent<BodyData>();
+
+        float density = data.mass / ((float)Math.Pow(data.radius, 3.0f));
+        data.mass += total_system_mass - data.mass;
+        data.radius = data.mass / (density);
+        edited_body.GetComponent<BodyData>().changeRadi((float)Math.Pow(data.radius, 1.0f / 3.0f));
+
+        data.momentuem = momentuem;
+        data.velocity = (momentuem / total_system_mass) * Time.deltaTime;
+    }
+
+    public static void destroyPlanet(GameObject old_body) 
+    {
+        PhysicsSynchronizer.removeCelestialBody(old_body);
+        gravitational_bodies.Remove(old_body.GetComponent<BodyData>());
+        Destroy(old_body);
     }
 }

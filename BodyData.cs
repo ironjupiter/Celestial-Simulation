@@ -10,7 +10,7 @@ public class BodyData : MonoBehaviour
     private static int id_setup = 0;
 
     public float mass;
-    public float denstity;
+    public float radius;
 
     public long rotation_period;
     public Vector3 velocity = new Vector3 (0, 0, 0);
@@ -25,8 +25,14 @@ public class BodyData : MonoBehaviour
         id = id_setup;
         id_setup++;
 
-        if (denstity == 0)
-            denstity = mass;
+        if (radius == 0)
+            radius = mass;
         
+    }
+
+    public void changeRadi(float r) 
+    {
+        radius = r;
+        this.GetComponent<PlanetScript>().findRadius(r);
     }
 }

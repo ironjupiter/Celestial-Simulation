@@ -12,8 +12,23 @@ public class PhysicsSynchronizer : MonoBehaviour
     {
         updateMomentuems();
         gravityCalculations();
-        contactForceCalculations();
+        //contactForceCalculations();
+        mergerCalculations();
         applyCalculations();
+
+        updateMomentuems();
+        float a = 0;
+        foreach (GameObject body in celestial_bodies) 
+        {
+            a += body.GetComponent<BodyData>().momentuem.magnitude;
+            //Debug.Log(body.GetComponent<BodyData>().id);
+        }
+        //Debug.Log(a);
+    }
+
+    void mergerCalculations() 
+    {
+        CollisionScript.nonElasticCollision(celestial_bodies);
     }
 
     void applyCalculations()
@@ -79,6 +94,12 @@ public class PhysicsSynchronizer : MonoBehaviour
     public static void addCelestialBody(GameObject body)
     {
         celestial_bodies.Add(body);
+        Debug.Log(celestial_bodies.Contains(body));
+    }
+
+    public static void removeCelestialBody(GameObject body)
+    {
+        celestial_bodies.Remove(body);        
     }
 
 }

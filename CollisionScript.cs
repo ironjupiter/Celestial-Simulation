@@ -9,8 +9,70 @@ public class CollisionScript : MonoBehaviour
     //note this only works for planets in this version
     public static Vector3 calculateAppliedForce(PlanetScript ps)
     {
+
+        return billiardBallCollisions(ps);
+
+    }
+
+    public static void nonElasticCollision(List <GameObject> celestial_bodies) 
+    {
+
+        List<CelestialBodyEditingPackage> changed_object_list = new List<CelestialBodyEditingPackage>();
+        List<GameObject> objects_to_destroy = new List<GameObject>();
+        foreach (GameObject gb in celestial_bodies)
+        {
+            if (gb.GetComponent<PlanetScript>().to_destroy == false && !(gb.GetComponent<PlanetScript>().touching_bodies.Count == 0))
+            {
+                BodyData body = gb.GetComponent<BodyData>();
+                PlanetScript ps = gb.GetComponent<PlanetScript>();
+                float system_total_mass = body.mass;
+                Vector3 momentuem = body.momentuem;
+                float radius = 0;
+                GameObject copy = gb.GetComponent<PlanetScript>().prefab_copy;
+                Vector3 center_of_mass = Vector3.zero;
+                foreach (GameObject cv in ps.touching_bodies)
+                {
+                    BodyData body_data = cv.GetComponent<BodyData>();
+                    if (body_data.mass <= body.mass)
+                    {
+                        system_total_mass += body_data.mass;
+                        momentuem += body_data.momentuem;
+                        radius += body_data.radius;
+                        cv.GetComponent<PlanetScript>().to_destroy = true;
+                        objects_to_destroy.Add(cv);
+                    }
+                }
+
+                center_of_mass += (body.mass * gb.transform.position)/ system_total_mass;
+                foreach (GameObject cv in ps.touching_bodies) 
+                {
+                    BodyData body_data = cv.GetComponent<BodyData>();
+                    center_of_mass += (body_data.mass*cv.transform.position)/system_total_mass;
+                }
+
+                changed_object_list.Add(new CelestialBodyEditingPackage(system_total_mass, radius, momentuem, center_of_mass, gb));
+            }
+        }
+
+        for (int i = 0; i < objects_to_destroy.Count;)
+        {
+            GameObject g = objects_to_destroy[0];
+            objects_to_destroy.Remove(g);
+            PlanetScript.destroyPlanet(g);
+        }
+
+        foreach (CelestialBodyEditingPackage pdp in changed_object_list)
+        {
+            PlanetScript.editPlanet(pdp.edited_object, pdp.mass, pdp.momentuem, pdp.position);
+        }
+
+        
+    }
+
+
+    static Vector3 billiardBallCollisions(PlanetScript ps) {
         float mass_ratio;
-        Vector3 Force = new Vector3(0,0,0);
+        Vector3 Force = new Vector3(0, 0, 0);
         BodyData A1 = ps.body_data;
 
         //go through touching bodies script to find anything that needs to be changed
@@ -26,6 +88,7 @@ public class CollisionScript : MonoBehaviour
                 mass_ratio = A2.mass / A1.mass;
                 Force = ((calculateAppliableForce(A1, A2)));
                 Force = Force - (mass_ratio * ((calculateThirdApplication(A1, A2))));
+                Force = 1 * angleAppliedForce(A1, A2, Force);
             }
             else if (A1.mass < A2.mass)
             {
@@ -33,18 +96,64 @@ public class CollisionScript : MonoBehaviour
                 mass_ratio = A1.mass / A2.mass;
                 Force = (mass_ratio * (calculateAppliableForce(A1, A2)));
                 Force = Force - (((calculateThirdApplication(A1, A2))));
-            } 
-            else if (A1.mass == A2.mass) 
+                Force = 1 * angleAppliedForce(A1, A2, Force);
+            }
+            else if (A1.mass == A2.mass)
             {
                 //both are equal so nothing matters in this case
-                Force = ((calculateAppliableForce(A1, A2))); // do * <float> for inelastic collision
+                Force = ((calculateAppliableForce(A1, A2))) *1f; // do * <float> for inelastic collision
                 Force = Force - (((calculateThirdApplication(A1, A2))));
+                Force = angleAppliedForce(A1, A2, Force);
+
             }
         }
 
 
         return Force;
+    }
 
+    static Vector3 angleAppliedForce(BodyData A1, BodyData A2, Vector3 force_vector) 
+    {
+        Vector3 normal_vector = (A1.transform.position - A2.transform.position);
+
+        normal_vector = normalScaling(normal_vector);
+        
+
+        float px = vectorForceProjection(force_vector.x, normal_vector.x);
+        float py = vectorForceProjection(force_vector.y, normal_vector.y);
+        float pz = vectorForceProjection(force_vector.z, normal_vector.z);
+
+        Vector3 adjusted_force = new Vector3(
+            forceVectorAdjustment(px, normal_vector.x),
+            forceVectorAdjustment(py, normal_vector.y),
+            forceVectorAdjustment(pz, normal_vector.z)
+            );
+
+        return adjusted_force;
+        
+    }
+
+    static Vector3 normalScaling(Vector3 normal) 
+    {
+        float x = Math.Abs(normal.x);
+        float y = Math.Abs(normal.y);
+        float z = Math.Abs(normal.z);
+
+        float scale = x + y + z;
+        return normal / scale;
+    }
+
+    static float forceVectorAdjustment(float p, float v) 
+    {
+        return v - (p);
+    }
+
+    static float vectorForceProjection(float v, float n)
+    {
+        if (v == 0 || n == 0)
+            return 0;
+
+        return ((v * n) / (-1* Math.Abs(n*n))) * n;
     }
 
     static Vector3 calculateThirdApplication(BodyData object1, BodyData object2)

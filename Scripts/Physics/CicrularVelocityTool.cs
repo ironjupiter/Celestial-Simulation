@@ -11,6 +11,11 @@ public class CicrularVelocityTool : MonoBehaviour
 
     public static void findMostMassive(List<GameObject> list)
     {
+        if (celestial_bodies.Count == 0)
+        {
+            return;
+        }
+
         mostMassive = celestial_bodies[0];
         foreach (GameObject g in celestial_bodies)
         {

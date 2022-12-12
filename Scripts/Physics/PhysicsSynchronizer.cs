@@ -12,10 +12,13 @@ public class PhysicsSynchronizer : MonoBehaviour
     private static List<GameObject> celestial_bodies = new List<GameObject>();
 
     private static int collisionAlgorithm = 0;
+    private static bool gravityOn = true;
 
     void Start()
     {
-        CicrularVelocityTool.findMostMassive(celestial_bodies);
+        if(celestial_bodies.Count > 0)
+            CicrularVelocityTool.findMostMassive(celestial_bodies);
+        
         foreach (GameObject g in celestial_bodies)
         {
             g.GetComponent<CicrularVelocityTool>().setInitializationVelocity();
@@ -26,7 +29,9 @@ public class PhysicsSynchronizer : MonoBehaviour
     private void FixedUpdate()
     {
         updateMomentuems();
-        gravityCalculations();
+        
+        if(gravityOn)
+            gravityCalculations();
 
         switch (collisionAlgorithm)
         {
@@ -149,5 +154,10 @@ public class PhysicsSynchronizer : MonoBehaviour
         float e = this.transform.GetChild(0).GetChild(0).GetChild(8).GetChild(0).GetComponent<Slider>().value;
         this.transform.GetChild(0).GetChild(0).GetChild(8).GetChild(2).GetComponent<TMP_Text>().text = Math.Round(e*100)/100 + "/1";
         CollisionScript.setElasticity((float)Math.Round(e*100)/100);
+    }
+
+    public void setGravity()
+    {
+        gravityOn = !gravityOn;
     }
 }

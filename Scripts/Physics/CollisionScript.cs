@@ -35,22 +35,31 @@ public class CollisionScript : MonoBehaviour
                 Vector3 center_of_mass = Vector3.zero;
                 foreach (GameObject cv in ps.touching_bodies)
                 {
-                    BodyData body_data = cv.GetComponent<BodyData>();
-                    if (body_data.mass <= body.mass)
+                    if (cv != null && cv.TryGetComponent(out BodyData body_data) == true)
                     {
-                        system_total_mass += body_data.mass;
-                        momentuem += body_data.momentuem;
-                        radius += body_data.radius;
-                        cv.GetComponent<PlanetScript>().to_destroy = true;
-                        objects_to_destroy.Add(cv);
+                       
+                        if (body_data.mass <= body.mass)
+                        {
+                            system_total_mass += body_data.mass;
+                            momentuem += body_data.momentuem;
+                            radius += body_data.radius;
+                            cv.GetComponent<PlanetScript>().to_destroy = true;
+                            objects_to_destroy.Add(cv);
+                        }
                     }
+
+                    
                 }
 
                 center_of_mass += (body.mass * gb.transform.position)/ system_total_mass;
                 foreach (GameObject cv in ps.touching_bodies) 
                 {
-                    BodyData body_data = cv.GetComponent<BodyData>();
-                    center_of_mass += (body_data.mass*cv.transform.position)/system_total_mass;
+                    if (cv != null && cv.TryGetComponent(out BodyData trash) == true)
+                    {
+                        BodyData body_data = cv.GetComponent<BodyData>();
+                        center_of_mass += (body_data.mass*cv.transform.position)/system_total_mass;
+                    }
+                    
                 }
 
 

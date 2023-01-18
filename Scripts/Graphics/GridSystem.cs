@@ -2,32 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridSystem : MonoBehaviour
+public class GridSystem
 {
-    private float length = 100000;
-    private int points = 500;//must be even!
-    private float line_width = 2;
+    //private float length = 100000;
+    //private int points = 500;//must be even!
+    //private float line_width = 2;
 
     private Mesh mesh;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        createMesh();
-    }
-    
-    
 
-    private void createMesh()
+    public Mesh createMesh(float length, int points, float line_width)
     {
         float square_radius = length / 2;
         float point_half = points / 2;
 
         //create grid references
-        List<Vector3> vertex_list = createGridReference(point_half, square_radius);
+        List<Vector3> vertex_list = createGridReference(point_half, square_radius, length, points);
         
         //create verticies
-        List<Vector3> polygon_verticies = createVerticies(vertex_list);
+        List<Vector3> polygon_verticies = createVerticies(vertex_list, line_width);
 
         mesh = new Mesh();
         Vector3[] polygon_verticies_array = polygon_verticies.ToArray();
@@ -49,7 +42,7 @@ public class GridSystem : MonoBehaviour
         
         //create mesh
         mesh.triangles = int_polys.ToArray();
-        this.GetComponent<MeshFilter>().mesh = mesh;
+        return mesh;
     }
 
     private List<Vector3> createPolys(List<Vector3> polygon_verticies)
@@ -105,7 +98,7 @@ public class GridSystem : MonoBehaviour
         return polygons;
     }
 
-    private List<Vector3> createVerticies(List<Vector3> vertex_list)
+    private List<Vector3> createVerticies(List<Vector3> vertex_list, float line_width)
     {
         List<Vector3> polygon_verticies = new List<Vector3>();
          int j = 0;
@@ -179,7 +172,7 @@ public class GridSystem : MonoBehaviour
         return polygon_verticies;
     }
 
-    private List<Vector3> createGridReference(float point_half, float square_radius)
+    private List<Vector3> createGridReference(float point_half, float square_radius, float length, int points)
     {
         List<Vector3> vertex_list = new List<Vector3>();
         //create reference points

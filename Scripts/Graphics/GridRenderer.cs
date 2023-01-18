@@ -51,14 +51,16 @@ public class GridRenderer : MonoBehaviour
 
         float grid_block = ((length / points) * current_quotient);
         Debug.Log(grid_block);
-        Vector3 cam_pos = this.Camera.transform.position;
-
-        float x_move = Mathf.Floor((cam_pos.x - this.transform.position.x)/grid_block)*grid_block;
-        float z_move = Mathf.Floor((cam_pos.z - this.transform.position.z)/grid_block)*grid_block;
+        
         
         if (distanceFromCenterAxis > grid_block && grid_block != 0)
         { 
-            this.transform.position += Vector3.Normalize(new Vector3(x_move, 0, z_move)) * grid_block * ySign;
+            Vector3 cam_pos = this.Camera.transform.position;
+
+            float x_move = Mathf.Floor((cam_pos.x - this.transform.position.x)/grid_block)*grid_block;
+            float z_move = Mathf.Floor((cam_pos.z - this.transform.position.z)/grid_block)*grid_block;
+            
+            this.transform.position += (new Vector3(x_move* ySign, 0, z_move* ySign));
         }
     }
 

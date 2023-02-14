@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using Unity.VisualScripting;
 using UnityEngine;
+using System.IO;
 
 public class GridRenderer : MonoBehaviour
 {
@@ -26,6 +27,10 @@ public class GridRenderer : MonoBehaviour
     
     private void Start()
     {
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //temp
+        //DataSheetCompiler.compileNames();
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         points = (int)(length / 10);
         
         //this.transform.AddComponent<>()
@@ -41,7 +46,8 @@ public class GridRenderer : MonoBehaviour
         distanceFromCenterAxis = Vector2.Distance(new Vector2(cam_pos.x, cam_pos.z), new Vector2(this.transform.position.x, this.transform.position.z));
 
         updateScale();
-        updateRotation();
+        //fix roation issues
+        //updateRotation();
         updateLocation();
     }
 
@@ -50,7 +56,7 @@ public class GridRenderer : MonoBehaviour
 
 
         float grid_block = ((length / points) * current_quotient);
-        Debug.Log(grid_block);
+        //Debug.Log(grid_block);
         
         
         if (distanceFromCenterAxis > grid_block && grid_block != 0)
@@ -60,7 +66,7 @@ public class GridRenderer : MonoBehaviour
             float x_move = Mathf.Floor((cam_pos.x - this.transform.position.x)/grid_block)*grid_block;
             float z_move = Mathf.Floor((cam_pos.z - this.transform.position.z)/grid_block)*grid_block;
             
-            this.transform.position += (new Vector3(x_move* ySign, 0, z_move* ySign));
+            this.transform.position += (new Vector3(x_move, 0, z_move));
         }
     }
 

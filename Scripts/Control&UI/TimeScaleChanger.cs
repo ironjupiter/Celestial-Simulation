@@ -20,6 +20,13 @@ public class TimeScaleChanger : MonoBehaviour
     void Update()
     {
         inputf = float.Parse(input.text);
-        Time.timeScale = inputf;
+        try
+        {
+            Time.timeScale = inputf;
+        }
+        catch
+        {
+            Debug.Log("NAN");
+        }
     }
 }

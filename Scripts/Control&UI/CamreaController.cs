@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -6,6 +7,8 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
+using Unity.Rendering.Universal;
+using Random = UnityEngine.Random;
 
 public class CamreaController : MonoBehaviour
 {
@@ -17,7 +20,10 @@ public class CamreaController : MonoBehaviour
     private Vector2 mousePos2;
     private float turnSpeed = 200f;
 
-    public GameObject prefabCopy;
+    public GameObject planetCopy;
+    public GameObject starCopy;
+    public int body_index;
+    
     public GameObject objectList;
     private static bool can_place = true;
     private static float mass = 10;
@@ -131,7 +137,7 @@ public class CamreaController : MonoBehaviour
 
     private void createBody(RaycastHit hit)
     {
-        GameObject new_body = Instantiate(prefabCopy);
+        GameObject new_body = Instantiate(getObject());
         new_body.transform.parent = objectList.transform;
                 
         new_body.transform.position = new Vector3(hit.point.x, 0, hit.point.z);
@@ -142,6 +148,33 @@ public class CamreaController : MonoBehaviour
         new_body.GetComponent<BodyData>().mass = mass;
         new_body.GetComponent<BodyData>().changeRadi(radius);
         new_body.GetComponent<BodyData>().cc = this.gameObject;
+
+        if (body_index == 0)
+        {
+            Color[] star_colors = {
+                new Color(157/225, 180/225, 255/225),  
+                new Color(162/225, 185/225, 255/225),  
+                new Color(167/225, 188/225, 255/225),
+                new Color(228/225, 232/225, 255/225), 
+                new Color(237/225, 238/225, 255/225),  
+                new Color(251/225, 248/225, 255/225),
+                new Color(255/225, 241/225, 223/225),  
+                new Color(255/225, 235/225, 209/225),  
+                new Color(255/225, 215/225, 174/225),
+                new Color(255/225, 187/225, 123/225),  
+                new Color(255/225, 187/225, 123/225) };
+            
+            
+            Color color = star_colors[Random.Range(0, star_colors.Length-1)];
+            new_body.GetComponent<Light>().color = color;
+            new_body.GetComponent<Light>().intensity = Mathf.Pow(radius, 2)*100;
+            new_body.GetComponent<Light>().range = radius*1000;
+            Material material = new_body.GetComponent<MeshRenderer>().material;
+            material.SetColor("_BaseColor", color);
+            material.SetColor("_EmissionColor", color * .7f);
+            Debug.Log(color);
+
+        }
     }
 
     public void setPlaceTool(bool onOff)
@@ -185,5 +218,27 @@ public class CamreaController : MonoBehaviour
             circle_orbit = true;
         }
     }
+    
+    public void setBodyType()
+    {
+        body_index = this.transform.GetChild(0).GetChild(0).GetChild(10).GetChild(1).GetComponent<TMP_Dropdown>().value;
+        Debug.Log(body_index);
+    }
+
+    private GameObject getObject()
+    {
+        switch (body_index)
+        {
+            case 0:
+                return starCopy;
+            case 1:
+                return planetCopy;
+            case 2:
+                return planetCopy;
+        }
+
+        return null;
+    }
+
 
 }

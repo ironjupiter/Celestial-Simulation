@@ -2,6 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Net;
+using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine;
+using System;
+using System.IO;
+using Random = UnityEngine.Random;
 
 public class PlanetScript : MonoBehaviour
 {
@@ -18,6 +26,7 @@ public class PlanetScript : MonoBehaviour
 
     //object data for collisions
     public List<GameObject> touching_bodies = new List<GameObject>();
+    
 
     // Start is called before the first frame update
     void Awake()
@@ -39,7 +48,9 @@ public class PlanetScript : MonoBehaviour
             gravitational_bodies.Add(body_data);
 
         PhysicsSynchronizer.addCelestialBody(this.gameObject);
-        
+       
+
+
     }
 
     private void FixedUpdate()

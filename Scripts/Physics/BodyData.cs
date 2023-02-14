@@ -1,15 +1,21 @@
-﻿using System;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System;
+using System.Net;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
-using MouseButton = UnityEngine.UIElements.MouseButton;
+using System;
+using System.IO;
+using Random = UnityEngine.Random;
 
 
 public class BodyData : MonoBehaviour
 {
     public int id = 0;
+    public string bodytype = "";
     private static int id_setup = 0;
 
     public float mass;
@@ -24,6 +30,9 @@ public class BodyData : MonoBehaviour
 
     public GameObject cc;
 
+    
+    public static List<string> all_names = new List<string>();
+    public string name;
     // Start is called before the first frame update
     void Awake()
     {
@@ -32,6 +41,19 @@ public class BodyData : MonoBehaviour
 
         if (radius == 0)
             radius = mass;
+        
+        if (id == 0)
+        {
+            string names = @"D:\Ben\Celestial Simulation\Assets\Scripts\FinalNameList.ttx";
+            string [] temp = File.ReadAllLines(names);
+            foreach (string st in temp) {
+                all_names.Add(st);
+            }
+        }
+
+        int name_index = (int)Mathf.Floor(Random.value*all_names.Count);
+        name = all_names[name_index];
+        Debug.Log(name);
         
     }
 
@@ -45,8 +67,6 @@ public class BodyData : MonoBehaviour
     public void OnMouseDown()
     {
         Debug.Log("pew");
-        cc.transform.SetParent(this.transform);
-        cc.transform.position = this.transform.position + new Vector3(this.radius+1, 0 ,0);
-        cc.transform.LookAt(this.transform);
+        PlanetInformationUI.setCameraParent(cc, this.transform);
     }
 }

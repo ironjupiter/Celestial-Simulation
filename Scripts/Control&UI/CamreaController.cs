@@ -7,7 +7,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
-using Unity.Rendering.Universal;
+using Button = UnityEngine.UI.Button;
 using Random = UnityEngine.Random;
 
 public class CamreaController : MonoBehaviour
@@ -31,9 +31,20 @@ public class CamreaController : MonoBehaviour
     private static bool circle_orbit = true;
     
     private bool placementOn = true;
+
+    public GameObject quitButtonObj;
+    private Button quitButton;
     void Start()
     {
         tt = this.gameObject.transform;
+
+        quitButton = quitButtonObj.GetComponent<Button>();
+        quitButton.onClick.AddListener(quitListener);
+    }
+
+    void quitListener()
+    {
+        Application.Quit();
     }
 
     // Update is called once per frame

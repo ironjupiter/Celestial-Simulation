@@ -103,8 +103,11 @@ public class PlanetScript : MonoBehaviour
         data.velocity = (momentuem / total_system_mass) * Time.deltaTime;
     }
 
-    public static void destroyPlanet(GameObject old_body) 
+    public static void destroyPlanet(GameObject old_body)
     {
+        if(old_body.transform.childCount > 0)
+            old_body.transform.GetChild(0).transform.parent = old_body.transform.parent;
+        
         PhysicsSynchronizer.removeCelestialBody(old_body);
         gravitational_bodies.Remove(old_body.GetComponent<BodyData>());
         Destroy(old_body);

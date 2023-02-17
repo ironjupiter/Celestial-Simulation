@@ -16,6 +16,8 @@ public class PhysicsSynchronizer : MonoBehaviour
 
     void Start()
     {
+        
+        
         if(celestial_bodies.Count > 0)
             CicrularVelocityTool.findMostMassive(celestial_bodies);
         

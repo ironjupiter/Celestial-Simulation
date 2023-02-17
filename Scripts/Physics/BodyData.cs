@@ -44,8 +44,9 @@ public class BodyData : MonoBehaviour
         
         if (id == 0)
         {
-            string names = @"D:\Ben\Celestial Simulation\Assets\Scripts\FinalNameList.ttx";
-            string [] temp = File.ReadAllLines(names);
+            string directory = Path.GetDirectoryName(Application.dataPath);
+            Debug.Log(directory);
+            string [] temp = File.ReadAllLines(@"Assets\Scripts\Physics\FinalNameList.txt");
             foreach (string st in temp) {
                 all_names.Add(st);
             }

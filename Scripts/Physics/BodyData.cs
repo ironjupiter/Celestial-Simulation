@@ -9,6 +9,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using System;
 using System.IO;
+using System.Net.Mime;
 using Random = UnityEngine.Random;
 
 
@@ -44,11 +45,23 @@ public class BodyData : MonoBehaviour
         
         if (id == 0)
         {
-            string directory = Path.GetDirectoryName(Application.dataPath);
-            Debug.Log(directory);
-            string [] temp = File.ReadAllLines(@"Assets\Scripts\Physics\FinalNameList.txt");
-            foreach (string st in temp) {
-                all_names.Add(st);
+            Debug.Log(Application.dataPath);
+            try
+            {
+                string filenameNoExt = "FinalNameList"; //.txt is removed
+                TextAsset f = (TextAsset)Resources.Load(filenameNoExt);
+                
+                Debug.Log("break" + f.text);
+                string[] temp = f.text.Split("\n");
+
+                foreach (string st in temp)
+                {
+                    all_names.Add(st);
+                }
+            }
+            catch
+            {
+                Debug.Log("goofy file bug");
             }
         }
 

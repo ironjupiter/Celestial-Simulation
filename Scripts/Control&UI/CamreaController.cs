@@ -77,7 +77,7 @@ public class CamreaController : MonoBehaviour
         if (Input.GetAxis("Vertical") != 0)
         {
       
-            this.transform.Rotate(0, 0, Input.GetAxis("Vertical")*Time.unscaledDeltaTime*turnSpeed, Space.Self);
+            this.transform.Rotate(0, 0, Input.GetAxis("Vertical")*Time.unscaledDeltaTime*200, Space.Self);
         }
 
         if (Input.GetAxis("RMB") > 0)

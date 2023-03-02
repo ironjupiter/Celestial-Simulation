@@ -73,7 +73,7 @@ public class BodyData : MonoBehaviour
         
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         position_read = transform.position;
         if (Input.GetKeyDown(KeyCode.Space))

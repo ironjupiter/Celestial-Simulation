@@ -83,6 +83,7 @@ public class PhysicsSynchronizer : MonoBehaviour
         {
             BodyData properties = body.GetComponent<BodyData>();
             body.transform.position += properties.velocity;
+            body.GetComponent<BodyData>().position_read = body.transform.position;
             //Debug.Log(properties.velocity);
         }
         updateMomentuems();

@@ -61,9 +61,9 @@ public class CollisionScript : MonoBehaviour
                     }
                     
                 }
-
-
-                    changed_object_list.Add(new CelestialBodyEditingPackage(system_total_mass, radius, momentuem, center_of_mass, gb));
+                
+              
+                changed_object_list.Add(new CelestialBodyEditingPackage(system_total_mass, radius, momentuem, center_of_mass, gb));
 
             }
         }

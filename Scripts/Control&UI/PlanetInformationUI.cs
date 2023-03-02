@@ -84,10 +84,10 @@ public class PlanetInformationUI : MonoBehaviour
             return;
         }
 
-        int spawn_num = 100;
-        float child_parent_mass_ratio = .001f;
+        int spawn_num = 1000;
+        float child_parent_mass_ratio = .0001f;
         float child_parent_radius_ratio = .01f;
-        float radius_ratio = 10f;
+        float radius_ratio = 20f;
         
         createBody(spawn_num, child_parent_mass_ratio, child_parent_radius_ratio, radius_ratio);
 
@@ -97,19 +97,23 @@ public class PlanetInformationUI : MonoBehaviour
     {
         for (int i = 0; i < spawn_num; i++)
         {
-        GameObject new_body = Instantiate(planetPrefab);
-        new_body.transform.parent = HighestParent.transform;
+            GameObject new_body = Instantiate(planetPrefab);
+            new_body.transform.parent = HighestParent.transform;
 
-        Vector2 temp_pos = setRelativePosition(radius_ratio);
-        Vector3 relative_position = new Vector3(temp_pos.x, 0, temp_pos.y);
-        new_body.transform.position = relative_position + camera.transform.parent.position;
-        
-        new_body.GetComponent<CicrularVelocityTool>().setInitializationVelocity(camera.transform.parent.gameObject);
-        
-        new_body.GetComponent<BodyData>().mass = camera.transform.parent.GetComponent<BodyData>().mass * child_parent_mass_ratio;
-        new_body.GetComponent<BodyData>().changeRadi(camera.transform.parent.GetComponent<BodyData>().radius * child_parent_radius_ratio);
-        new_body.GetComponent<BodyData>().cc = camera;
+            Vector2 temp_pos = setRelativePosition(radius_ratio);
+            //Debug.Log("temp_pos_" + temp_pos);
+            Vector3 relative_position = new Vector3(temp_pos.x, 0, temp_pos.y);
+            //Debug.Log("relative_position_" + relative_position);
+            new_body.transform.position = relative_position + camera.transform.parent.position;
+            //Debug.Log("new_body.transform.position_" + new_body.transform.position);
             
+            new_body.GetComponent<CicrularVelocityTool>().setInitializationVelocity(camera.transform.parent.gameObject);
+            
+            new_body.GetComponent<BodyData>().mass = camera.transform.parent.GetComponent<BodyData>().mass * child_parent_mass_ratio;
+            new_body.GetComponent<BodyData>().changeRadi(camera.transform.parent.GetComponent<BodyData>().radius * child_parent_radius_ratio);
+            new_body.GetComponent<BodyData>().cc = camera;
+            new_body.GetComponent<BodyData>().position_read = new_body.transform.position;
+
         }
     }
 

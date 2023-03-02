@@ -8,7 +8,7 @@ public class GravityScript : MonoBehaviour
     //the gravitatinal constant, put at 1 for debug reasons
     static float G = 1f;//0.0000000000667408f this is the irl constant
 
-    public static Vector3 applyAllGravity(GameObject object1, List<BodyData> objectList)
+    public static Vector3 applyAllGravity(BodyData object1, List<BodyData> objectList)
     {
 
         //set up the force vector
@@ -17,10 +17,10 @@ public class GravityScript : MonoBehaviour
         foreach (BodyData obj2 in objectList)
         {
             //make sure there is no repeat
-            if (obj2.gameObject != object1)
+            if (obj2 != object1)
             {
                 //add new gravity vector to f21
-                F21 += calculateGravity(obj2.gameObject, object1);
+                F21 += calculateGravity(obj2, object1);
             }
 
         }
@@ -28,13 +28,13 @@ public class GravityScript : MonoBehaviour
         return F21;
     }
 
-    public static Vector3 calculateGravity(GameObject pulling, GameObject pulled)
+    public static Vector3 calculateGravity(BodyData pulling, BodyData pulled)
     {
-        Vector3 r1 = pulling.transform.position;
-        Vector3 r2 = pulled.transform.position;
+        Vector3 r1 = pulling.position_read;
+        Vector3 r2 = pulled.position_read;
 
-        float m1 = pulling.GetComponent<BodyData>().mass;
-        float m2 = pulled.GetComponent<BodyData>().mass;
+        float m1 = pulling.mass;
+        float m2 = pulled.mass;
 
         Vector3 F21;
 
@@ -44,7 +44,7 @@ public class GravityScript : MonoBehaviour
 
         Vector3 subtratedVector = (r2 - r1);
 
-        double mag = Math.Sqrt((subtratedVector.x * subtratedVector.x) + (subtratedVector.y * subtratedVector.y) + (subtratedVector.z * subtratedVector.z));
+        double mag = subtratedVector.magnitude;
 
 
         Vector3 r21 = ((r2 - r1) / (float)mag);

@@ -11,6 +11,7 @@ using System;
 using System.IO;
 using System.Net.Mime;
 using Random = UnityEngine.Random;
+using System.Text.Json;
 
 
 public class BodyData : MonoBehaviour
@@ -30,6 +31,7 @@ public class BodyData : MonoBehaviour
     public Vector3 impulse = new Vector3(0, 0, 0);
 
     public GameObject cc;
+    public Vector3 position_read;
 
     
     public static List<string> all_names = new List<string>();
@@ -61,7 +63,7 @@ public class BodyData : MonoBehaviour
             }
             catch
             {
-                Debug.Log("goofy file bug");
+                Debug.Log("file not readable");
             }
         }
 
@@ -69,6 +71,16 @@ public class BodyData : MonoBehaviour
         name = all_names[name_index];
         Debug.Log(name);
         
+    }
+
+    private void Update()
+    {
+        position_read = transform.position;
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            string jsonString = JsonUtility.ToJson(this);
+            Debug.Log("json string " + jsonString);
+        }
     }
 
     public void changeRadi(float r) 

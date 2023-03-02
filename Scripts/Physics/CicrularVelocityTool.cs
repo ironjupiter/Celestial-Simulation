@@ -26,9 +26,9 @@ public class CicrularVelocityTool : MonoBehaviour
         }
     }
 
-    public void applyMostForceful(List<GameObject> list, GameObject forcedBody)
+    /*public void applyMostForceful(List<GameObject> list, GameObject forcedBody)
     {
-        celestial_bodies = list;
+        /*celestial_bodies = list;
 
         float highest_force = 0;
         int highest_force_index = -1;
@@ -41,7 +41,7 @@ public class CicrularVelocityTool : MonoBehaviour
         {
             if (forcedBody != g)
             {
-                float force = GravityScript.calculateGravity(g, forcedBody).magnitude;
+                //float force = GravityScript.calculateGravity(g, forcedBody).magnitude;
                 int index = celestial_bodies.IndexOf(g);
                 force_list.Add(force);
                 force_index.Add(index);
@@ -60,7 +60,7 @@ public class CicrularVelocityTool : MonoBehaviour
         
         forcedBody.GetComponent<CicrularVelocityTool>().setInitializationVelocity(list[highest_force_index]);
         
-    }
+    }*/
 
     public static void updateList(List<GameObject> bodies)
     {
@@ -106,20 +106,20 @@ public class CicrularVelocityTool : MonoBehaviour
     }
 
     //fix this part
-    public void setInitializationVelocity(GameObject mostForceful)
+    public void setInitializationVelocity(GameObject parentObj)
     {
-        if (mostForceful == this.gameObject)
+        if (parentObj == this.gameObject)
         {
             return;
         }
 
-        float distance = Vector3.Distance(this.gameObject.transform.position, mostForceful.transform.position);
+        float distance = Vector3.Distance(this.gameObject.transform.position, parentObj.transform.position);
 //        float gravitationalForce = mostForceful.GetComponent<BodyData>().mass / (float)(distance * distance);
         
-        double neededVelocity = Mathf.Sqrt((mostForceful.GetComponent<BodyData>().mass /(distance)))/6.7f;//6.7 seems to be what is needed to fine tune???
+        double neededVelocity = Mathf.Sqrt((parentObj.GetComponent<BodyData>().mass /(distance)))/6.7f;//6.7 seems to be what is needed to fine tune???
         //double neededVelocity = Mathf.Sqrt(gravitationalForce*distance);
-        float x_dis = this.gameObject.transform.position.x - mostForceful.transform.position.x;
-        float z_dis = this.gameObject.transform.position.z - mostForceful.transform.position.z;
+        float x_dis = this.gameObject.transform.position.x - parentObj.transform.position.x;
+        float z_dis = this.gameObject.transform.position.z - parentObj.transform.position.z;
         
         Vector3 velocity;
         if (x_dis != 0 || z_dis != 0)
@@ -139,7 +139,7 @@ public class CicrularVelocityTool : MonoBehaviour
         {
             velocity = new Vector3((float)neededVelocity, 0, 0);
         }
-        this.gameObject.GetComponent<BodyData>().velocity = velocity;
-        Debug.Log(neededVelocity);
+        this.gameObject.GetComponent<BodyData>().velocity = velocity + parentObj.GetComponent<BodyData>().velocity;
+        Debug.Log(this.gameObject.GetComponent<BodyData>().velocity);
     }
 }

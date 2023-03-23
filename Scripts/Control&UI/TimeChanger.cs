@@ -10,6 +10,6 @@ public class TimeChanger : MonoBehaviour
     void Update()
     {
         
-        Time.timeScale = timeScale;
+        //Time.timeScale = timeScale;
     }
 }

@@ -19,7 +19,7 @@ public class CollisionScript : MonoBehaviour
 
     public static void nonElasticCollision(List <GameObject> celestial_bodies) 
     {
-
+        
         List<CelestialBodyEditingPackage> changed_object_list = new List<CelestialBodyEditingPackage>();
         List<GameObject> objects_to_destroy = new List<GameObject>();
         foreach (GameObject gb in celestial_bodies)

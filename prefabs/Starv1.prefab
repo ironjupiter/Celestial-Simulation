@@ -147,17 +147,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d68c2797e3c3a994f9b6756c51771da9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 0
+  id: -1
+  name: 
   bodytype: Star
   mass: 10
   radius: 2
-  rotation_period: 0
+  position_read: {x: 0, y: 0, z: 0}
   velocity: {x: 0, y: 0, z: 0}
   momentuem: {x: 0, y: 0, z: 0}
-  spin_vector: {x: 0, y: 0, z: 0}
   impulse: {x: 0, y: 0, z: 0}
   cc: {fileID: 0}
-  name: 
 --- !u!96 &902742065083549952
 TrailRenderer:
   serializedVersion: 2

@@ -25,6 +25,8 @@ public class GravityScript : MonoBehaviour
 
         }
         //return force vector
+        //Debug.Log("calculated gravity: " + F21);
+
         return F21;
     }
 

@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 using Button = UnityEngine.UI.Button;
@@ -12,20 +13,20 @@ using Random = UnityEngine.Random;
 
 public class CamreaController : MonoBehaviour
 {
-    private float speed = 3000f;
+    public float speed = 3000f;
     private Transform tt;
     
     private bool mouseButtonHeld = false;
     private Vector2 mousePos1;
     private Vector2 mousePos2;
-    private float turnSpeed = 200f;
+    public float turnSpeed = 200f;
 
     public GameObject planetCopy;
     public GameObject starCopy;
     public int body_index;
     
     public GameObject objectList;
-    private static bool can_place = true;
+    public  bool can_place = true;
     private static float mass = 10;
     private static float radius = 2;
     private static bool circle_orbit = true;
@@ -37,9 +38,6 @@ public class CamreaController : MonoBehaviour
     void Start()
     {
         tt = this.gameObject.transform;
-
-        quitButton = quitButtonObj.GetComponent<Button>();
-        quitButton.onClick.AddListener(quitListener);
     }
 
     void quitListener()
@@ -57,6 +55,15 @@ public class CamreaController : MonoBehaviour
 
     void movement()
     {
+        if (this.TryGetComponent<SimulationUIManager>(out SimulationUIManager s))
+        {
+            SimulationUIManager suim = this.GetComponent<SimulationUIManager>();
+            if (suim.escapeMenu.enabled == true || suim.planetTool.enabled == true)
+            {
+                return;
+            }
+        }
+
         if (Input.GetAxis("Sideways") != 0)
         {
          
@@ -82,7 +89,7 @@ public class CamreaController : MonoBehaviour
 
         if (Input.GetAxis("RMB") > 0)
         {
-            Debug.Log("RMB");
+            //Debug.Log("RMB");
             //Debug.Log(Input.mousePosition);
 
             if (!mouseButtonHeld)
@@ -111,11 +118,11 @@ public class CamreaController : MonoBehaviour
         {
             if (this.transform.GetChild(0).GetComponent<Canvas>().enabled)
             {
-                this.transform.GetChild(0).GetComponent<Canvas>().enabled = false;
+                //this.transform.GetChild(0).GetComponent<Canvas>().enabled = false;
             }
             else
             {
-                this.transform.GetChild(0).GetComponent<Canvas>().enabled = true;
+                //this.transform.GetChild(0).GetComponent<Canvas>().enabled = true;
             }
 
         }
@@ -128,65 +135,15 @@ public class CamreaController : MonoBehaviour
         
         //&& this.transform.GetChild(0).GetComponent<Canvas>().transform.GetChild(1).GetComponent<Toggle>().value
         //this.transform.GetChild(0).transform.GetChild(0).transform.GetChild(3).gameObject.GetComponent<Toggle>().value
-        if (Input.GetKeyDown(KeyCode.Mouse0) && !this.transform.GetChild(0).GetComponent<Canvas>().enabled && (can_place))
-        {
-
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
-            {
-                createBody((hit));
-                
-            }
-        }
+        
         //used as a fail safe
         if (Input.GetKeyDown(KeyCode.R))
         {
-            this.transform.GetChild(0).GetChild(0).GetChild(2).GetChild(0).GetComponent<TMP_InputField>().text = "1";
+            Time.timeScale = 1;
         }
     }
 
-    private void createBody(RaycastHit hit)
-    {
-        GameObject new_body = Instantiate(getObject());
-        new_body.transform.parent = objectList.transform;
-                
-        new_body.transform.position = new Vector3(hit.point.x, 0, hit.point.z);
-        
-        if (circle_orbit)
-            new_body.GetComponent<CicrularVelocityTool>().setInitializationVelocity();
-        
-        new_body.GetComponent<BodyData>().mass = mass;
-        new_body.GetComponent<BodyData>().changeRadi(radius);
-        new_body.GetComponent<BodyData>().cc = this.gameObject;
-
-        if (body_index == 0)
-        {
-            Color[] star_colors = {
-                new Color(157/225, 180/225, 255/225),  
-                new Color(162/225, 185/225, 255/225),  
-                new Color(167/225, 188/225, 255/225),
-                new Color(228/225, 232/225, 255/225), 
-                new Color(237/225, 238/225, 255/225),  
-                new Color(251/225, 248/225, 255/225),
-                new Color(255/225, 241/225, 223/225),  
-                new Color(255/225, 235/225, 209/225),  
-                new Color(255/225, 215/225, 174/225),
-                new Color(255/225, 187/225, 123/225),  
-                new Color(255/225, 187/225, 123/225) };
-            
-            
-            Color color = star_colors[Random.Range(0, star_colors.Length-1)];
-            new_body.GetComponent<Light>().color = color;
-            new_body.GetComponent<Light>().intensity = Mathf.Pow(radius, 2)*100;
-            new_body.GetComponent<Light>().range = radius*1000;
-            Material material = new_body.GetComponent<MeshRenderer>().material;
-            material.SetColor("_BaseColor", color);
-            material.SetColor("_EmissionColor", color * .7f);
-            Debug.Log(color);
-
-        }
-    }
+    
 
     public void setPlaceTool(bool onOff)
     {
@@ -195,26 +152,26 @@ public class CamreaController : MonoBehaviour
 
     public void setMovementSpeed()
     {
-        speed = float.Parse(this.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<TMP_InputField>().text);
+        //speed = float.Parse(this.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<TMP_InputField>().text);
         Debug.Log(speed);
     }
 
     public void setRotationSpeed()
     {
-        turnSpeed = float.Parse(this.transform.GetChild(0).transform.GetChild(0).transform.GetChild(1).transform.GetChild(0).GetComponent<TMP_InputField>().text);
+        //turnSpeed = float.Parse(this.transform.GetChild(0).transform.GetChild(0).transform.GetChild(1).transform.GetChild(0).GetComponent<TMP_InputField>().text);
         Debug.Log(turnSpeed);
     }
 
     public void setRadius()
     {
-        radius = float.Parse(this.transform.GetChild(0).transform.GetChild(0).transform.GetChild(6).transform.GetChild(0).GetComponent<TMP_InputField>().text);
+        //radius = float.Parse(this.transform.GetChild(0).transform.GetChild(0).transform.GetChild(6).transform.GetChild(0).GetComponent<TMP_InputField>().text);
         Debug.Log(radius);
     }
 
     public void setMass()
     {
         
-        mass = float.Parse(this.transform.GetChild(0).transform.GetChild(0).transform.GetChild(5).transform.GetChild(0).GetComponent<TMP_InputField>().text);
+        //mass = float.Parse(this.transform.GetChild(0).transform.GetChild(0).transform.GetChild(5).transform.GetChild(0).GetComponent<TMP_InputField>().text);
         Debug.Log(mass);
     }
 
@@ -232,24 +189,11 @@ public class CamreaController : MonoBehaviour
     
     public void setBodyType()
     {
-        body_index = this.transform.GetChild(0).GetChild(0).GetChild(10).GetChild(1).GetComponent<TMP_Dropdown>().value;
+        //body_index = this.transform.GetChild(0).GetChild(0).GetChild(10).GetChild(1).GetComponent<TMP_Dropdown>().value;
         Debug.Log(body_index);
     }
 
-    private GameObject getObject()
-    {
-        switch (body_index)
-        {
-            case 0:
-                return starCopy;
-            case 1:
-                return planetCopy;
-            case 2:
-                return planetCopy;
-        }
-
-        return null;
-    }
+    
 
 
 }

@@ -11,36 +11,37 @@ using System;
 using System.IO;
 using System.Net.Mime;
 using Random = UnityEngine.Random;
-using System.Text.Json;
 
 
 public class BodyData : MonoBehaviour
 {
-    public int id = 0;
-    public string bodytype = "";
-    private static int id_setup = 0;
-
-    public float mass;
-    public float radius;
-
-    public long rotation_period;
-    public Vector3 velocity = new Vector3 (0, 0, 0);
-    public Vector3 momentuem;
-    public Vector3 spin_vector;
-
-    public Vector3 impulse = new Vector3(0, 0, 0);
-
-    public GameObject cc;
-    public Vector3 position_read;
-
     
     public static List<string> all_names = new List<string>();
+    private static int id_setup = 0;
+    
+    public int id = -1;
     public string name;
+    public string bodytype = "";
+    
+    public float mass;
+    public float radius;
+    
+    public Vector3 position_read;
+    public Vector3 velocity = new Vector3 (0, 0, 0);
+    public Vector3 momentuem;
+    public Vector3 impulse = new Vector3(0, 0, 0);
+    public Color star_color = Color.black;
+
+    public GameObject cc;
+
     // Start is called before the first frame update
     void Awake()
     {
-        id = id_setup;
-        id_setup++;
+        if (id == -1)
+        {
+            id = id_setup;
+            id_setup++;
+        }
 
         if (radius == 0)
             radius = mass;
@@ -93,6 +94,6 @@ public class BodyData : MonoBehaviour
     public void OnMouseDown()
     {
         Debug.Log("pew");
-        PlanetInformationUI.setCameraParent(cc, this.transform);
+        SimulationUIManager.setCameraParent(cc, this.transform);
     }
 }

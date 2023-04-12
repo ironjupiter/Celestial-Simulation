@@ -83,6 +83,8 @@ public class PhysicsSynchronizer : MonoBehaviour
 
         if (dsbd.bodytype.ToLower() == "star")
         {
+            new_body.GetComponent<BodyData>().star_color = dsbd.star_color;
+            
             new_body.GetComponent<Light>().color = dsbd.star_color;
             new_body.GetComponent<Light>().intensity = Mathf.Pow(dsbd.radius, 2) * 100;
             new_body.GetComponent<Light>().range = dsbd.radius * 1000;

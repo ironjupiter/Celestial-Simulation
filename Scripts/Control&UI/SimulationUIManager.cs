@@ -194,7 +194,7 @@ public class SimulationUIManager : MonoBehaviour
             speedUI.GetComponent<TMP_Text>().text = " Speed: \n N/A";
         }
         
-        if (Input.GetKeyDown(KeyCode.Mouse0) && !EventSystem.current.IsPointerOverGameObject() && placementOn)
+        if (Input.GetKeyDown(KeyCode.Mouse0) && !EventSystem.current.IsPointerOverGameObject() && placementOn && !(escapeMenu.enabled == true || planetTool.enabled == true))
         {
             
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -268,21 +268,10 @@ public class SimulationUIManager : MonoBehaviour
 
         if (bodyIndex == 0)
         {
-            Color[] star_colors = {
-                new Color(157/225, 180/225, 255/225),  
-                new Color(162/225, 185/225, 255/225),  
-                new Color(167/225, 188/225, 255/225),
-                new Color(228/225, 232/225, 255/225), 
-                new Color(237/225, 238/225, 255/225),  
-                new Color(251/225, 248/225, 255/225),
-                new Color(255/225, 241/225, 223/225),  
-                new Color(255/225, 235/225, 209/225),  
-                new Color(255/225, 215/225, 174/225),
-                new Color(255/225, 187/225, 123/225),  
-                new Color(255/225, 187/225, 123/225) };
+            Color[] star_colors = BodyData.colors;
             
             
-            Color color = star_colors[Random.Range(0, star_colors.Length-1)];
+            Color color = star_colors[Random.Range(0, star_colors.Length)];
             new_body.GetComponent<Light>().color = color;
             new_body.GetComponent<BodyData>().star_color = color;
             new_body.GetComponent<Light>().intensity = Mathf.Pow(radius, 2)*100;

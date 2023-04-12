@@ -57,7 +57,7 @@ public class CamreaController : MonoBehaviour
     {
         if (this.TryGetComponent<SimulationUIManager>(out SimulationUIManager s))
         {
-            SimulationUIManager suim = this.GetComponent<SimulationUIManager>();
+            SimulationUIManager suim = this.gameObject.GetComponent<SimulationUIManager>();
             if (suim.escapeMenu.enabled == true || suim.planetTool.enabled == true)
             {
                 return;

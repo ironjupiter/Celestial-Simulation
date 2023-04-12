@@ -15,7 +15,11 @@ using Random = UnityEngine.Random;
 
 public class BodyData : MonoBehaviour
 {
-    
+    public static Color [] colors = {
+        new Color(157/225, 180/225, 255/225),
+        new Color(228/225, 232/225, 255/225),
+        new Color(255/225, 241/225, 223/225),
+        new Color(255/225, 187/225, 123/225) };
     public static List<string> all_names = new List<string>();
     private static int id_setup = 0;
     
@@ -71,7 +75,7 @@ public class BodyData : MonoBehaviour
         int name_index = (int)Mathf.Floor(Random.value*all_names.Count);
         name = all_names[name_index];
         Debug.Log(name);
-        
+
     }
 
     private void FixedUpdate()
